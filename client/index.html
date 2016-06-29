@@ -25,76 +25,40 @@
 				});
 
 				// Create a factory (attached to this module)
-			myApp.factory('PlayerFactory', function (){
+			myApp.factory('CustomerFactory', function (){
 				// The factory is nothing more than a function that returns an object
-				var players = [ {name: 'Speros'}, {name: 'Jimmy'}, {name: 'Jay'} ];
+				var customers = [];
 				var factory = {};
 					// Add a getUsers key to the factory object with a value of a function.
-				factory.getPlayers = function(callback){
+				factory.getCustomers = function(callback){
 					// Pass the users to a callback to be used by whoever calls the method
-					callback(players);
-				}
-				factory.addPlayers = function(newPlayer){
-					players.push(newPlayer);
-				}
-				factory.deletePlayers = function(player){
-					players.splice(players.indexOf(player), 1);
-				}
-				// Most important step: return the object so it can be used by the rest of our angular code
-				return factory;
-			});
+					console.log("getting customers");
+					callback(customers);
 
-				// Create a factory (attached to this module)
-			myApp.factory('TeamFactory', function (){
-				// The factory is nothing more than a function that returns an object
-				var teams = [ {name: 'Seahawks'}, {name: '49ers'}, {name: 'Honeybadgers'} ];
-				var factory = {};
-				var associations = [];
-
-					// Add a getUsers key to the factory object with a value of a function.
-				factory.getTeams = function(callback){
-					// Pass the teams to a callback to be used by whoever calls the method
-					callback(teams);
 				}
-				factory.addTeams = function(newTeam){
-					teams.push(newTeam);
+				factory.addCustomers = function(newCustomer){
+					customers.push(newCustomer);
 				}
-				factory.deleteTeams = function(team){
-					teams.splice(teams.indexOf(team), 1);
+				factory.deleteCustomers = function(customer){
+					customers.splice(customers.indexOf(customer), 1);
 				}
-
-
-				factory.getAssociations = function(callback){
-					callback(associations);
-				}
-				factory.addAssociations = function(newAssociation){
-						// Jay's code here, not mine :)
-					var copy = JSON.parse(JSON.stringify(newAssociation))
-					associations.push(copy);
-						//
-					console.log("adding", associations);
-				}
-				factory.deleteAssociations = function(association){
-					associations.splice(associations.indexOf(association), 1)
-				}				
-
 				// Most important step: return the object so it can be used by the rest of our angular code
 				return factory;
 			});
 
 				// The .controller() method adds a UserLists controller to the module
-			myApp.controller('PlayersController', function ($scope, PlayerFactory){
-				$scope.players = [];
+			myApp.controller('CustomersController', function ($scope, CustomerFactory){
+				$scope.customers = [];
 
-				PlayerFactory.getPlayers(function(data){
-					$scope.players = data;
-					console.log("I'm in PlayersController - get method", $scope.players)
+				CustomerFactory.getCustomers(function(data){
+					$scope.customers = data;
+					console.log("I'm in CustomerFactory - get method", $scope.customers)
 				});
 
-				$scope.addPlayers = function(){
-					PlayerFactory.addPlayers($scope.newPlayer);
-					$scope.newPlayer = {};
-					console.log("I'm in PlayersController - post method", $scope.players)
+				$scope.addCustomers = function(){
+					CustomerFactory.addCustomers($scope.newCustomer);
+					$scope.newCustomer = {};
+					console.log("I'm in CustomerFactory - post method", $scope.customers)
 				};
 
 				$scope.deletePlayers = function(player){
@@ -104,62 +68,33 @@
 
 			});
 
-				// The .controller() method adds a CustomizeUsers controller to the module
-			myApp.controller('TeamsController', function ($scope, TeamFactory){
-				$scope.teams = [];
+			myApp.controller('ordersController', function ($scope, CustomerFactory){
+				$scope.orders = [];
+				$scope.customers = [];
 
-				TeamFactory.getTeams(function(data){
-					$scope.teams = data;
-					console.log("I'm in TeamsController - get method", $scope.teams)
+
+				CustomerFactory.getOrders(function(data){
+					$scope.orders = data;
+					console.log("I'm in ordersController - get orders method", $scope.orders)
 				});
 
-				$scope.addTeams = function(){
-					TeamFactory.addTeams($scope.newTeam);
-					$scope.newTeam = {};
-					console.log("I'm in TeamsController - post method", $scope.teams);
+				CustomerFactory.getCustomers(function(data){
+					$scope.customers = data;
+
+				})
+
+				$scope.addOrders = function(){
+					// console.log("add assoc ", $scope.newAssociation)
+					CustomerFactory.addOrders($scope.newOrders);
+					$scope.newOrders = {};
 				};
 
-				$scope.deleteTeams = function(team){
-					TeamFactory.deleteTeams(team);
-					console.log("I'm in TeamsController - post method", $scope.teams);
-				}
+				$scope.deleteOrders = function(order){
+					// $scope.associations.slice($scope.associations.indexOf($scope.association), 1);
+					CustomerFactory.deleteOrders(order);
+				};
 
 			});
-
-				// The .controller() method adds a CustomizeUsers controller to the module
-			myApp.controller('AssociationsController', function ($scope, TeamFactory, PlayerFactory){
-				$scope.teams = [];
-				$scope.players = [];
-				$scope.associations = [];
-
-
-				PlayerFactory.getPlayers(function(data){
-					$scope.players = data;
-					console.log("I'm in AssocController - get Players method", $scope.players)
-				});
-				TeamFactory.getTeams(function(data){
-					$scope.teams = data;
-					console.log("I'm in AssocController - get Teams method", $scope.teams)
-				});
-
-				
-				TeamFactory.getAssociations(function(data){
-					$scope.associations = data;
-					console.log("I'm in AssocController - get Associations method", $scope.associations)
-				});
-
-				$scope.addAssociations = function(){
-					// console.log("add assoc ", $scope.newAssociation)
-					TeamFactory.addAssociations($scope.newAssociation);
-					$scope.newAssociations = {};
-				};
-
-				$scope.deleteAssociations = function(association){
-					// $scope.associations.slice($scope.associations.indexOf($scope.association), 1);
-					TeamFactory.deleteAssociations(association);
-				};
-
-			});			
 
 		</script>
 	</head>
