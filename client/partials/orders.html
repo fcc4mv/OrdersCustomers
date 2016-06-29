@@ -1,6 +1,23 @@
-<div ng-controller="TeamsController">
-	<h2>Add a new customer</h2>
-	<h3>Customer Name: <input type="text" ng-model="newTeam.name"><input type="submit" ng-click="addTeams()" value="Add"></h3>
+<div ng-controller="CustomersController">
+	<h2>Add a new order</h2>
+	Customers<select ng-model="">
+		<option ng-repeat="customer in customers" values="{{ customer.name }}" ng-model="customer.name">{{ customer.name}}</option>
+	</select>
+	orders<select>
+		<option>1</option>
+		<option>2</option>
+		<option>3</option>
+		<option>4</option>
+		<option>5</option>
+	</select>
+	<select>
+		<option>Nike Shoes</option>
+		<option>Black Belts</option>
+		<option>Ice Creams</option>
+		<option>Candies</option>
+	</select>
+	<input type="submit" value="Order" ng-click="addOrders">
+	<!-- <h3>Customer Name: <input type="text" ng-model="newTeam.name"><input type="submit" ng-click="addTeams()" value="Add"></h3> -->
 	<br><br>
 	<hr>
 
@@ -9,15 +26,19 @@
 		<col width="300">
 		<col width="300">
 		<col width="300">
+		<col width="300">
 		<tr align="left">
-			<th>Team Name</th>
-			<th>Created Date</th>
-			<th>Actions</th>
+			<th>Customer Name</th>
+			<th>Product</th>
+			<th>Quantity</th>
+			<th>Date</th>
 		</tr>
-		<tr ng-repeat="team in teams | filter: filter_name" align="left">
-			<td>{{ team.name }}</td>
-			<td>{{ team.created_at }}</td>
-			<td><input type="submit" ng-click="deleteTeams(team)" value="Remove"></td>
+		<tr ng-repeat="customer in customers | filter: filter_name" align="left">
+			<td>{{ customer.name }}</td>
+			<td>{{ customer.product }}</td>
+			<td>{{ customer.quantity }}</td>
+			<td>{{ customer.created_at }}</td>
+			<td><input type="submit" ng-click="deleteCustomers(customer)" value="Remove"></td>
 		</tr>
 	</table>
 	<br>
