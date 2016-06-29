@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+		<!-- These 2 versions below MUST MATCH!! -->
+		<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.3.5/angular.min.js"></script>
+		<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.3.5/angular-route.min.js"></script>
+
+		<script type="text/javascript">
+				//  inject the ngRoute dependency in the module.
+			var myApp = angular.module('myApp', ['ngRoute']);
+				//  use the config method to set up routing:
+			myApp.config(function ($routeProvider){
+				$routeProvider
+				    .when('/customers',{
+						templateUrl: 'partials/customers.html'
+					})
+					.when('/orders',{
+						templateUrl: 'partials/orders.html'
+					})
+					.otherwise({
+						redirectTo: '/'
+					});
+				});
+
+				// Create a factory (attached to this module)
+			myApp.factory('PlayerFactory', function (){
+				// The factory is nothing more than a function that returns an object
+				var players = [ {name: 'Speros'}, {name: 'Jimmy'}, {name: 'Jay'} ];
+				var factory = {};
+					// Add a getUsers key to the factory object with a value of a function.
+				factory.getPlayers = function(callback){
+					// Pass the users to a callback to be used by whoever calls the method
+					callback(players);
+				}
+				factory.addPlayers = function(newPlayer){
+					players.push(newPlayer);
+				}
+				factory.deletePlayers = function(player){
+					players.splice(players.indexOf(player), 1);
+				}
+				// Most important step: return the object so it can be used by the rest of our angular code
+				return factory;
+			});
+
+				// Create a factory (attached to this module)
+			myApp.factory('TeamFactory', function (){
+				// The factory is nothing more than a function that returns an object
+				var teams = [ {name: 'Seahawks'}, {name: '49ers'}, {name: 'Honeybadgers'} ];
+				var factory = {};
+				var associations = [];
+
+					// Add a getUsers key to the factory object with a value of a function.
+				factory.getTeams = function(callback){
+					// Pass the teams to a callback to be used by whoever calls the method
+					callback(teams);
+				}
+				factory.addTeams = function(newTeam){
+					teams.push(newTeam);
+				}
+				factory.deleteTeams = function(team){
+					teams.splice(teams.indexOf(team), 1);
+				}
+
+
+				factory.getAssociations = function(callback){
+					callback(associations);
+				}
+				factory.addAssociations = function(newAssociation){
+						// Jay's code here, not mine :)
+					var copy = JSON.parse(JSON.stringify(newAssociation))
+					associations.push(copy);
+						//
+					console.log("adding", associations);
+				}
+				factory.deleteAssociations = function(association){
+					associations.splice(associations.indexOf(association), 1)
+				}				
+
+				// Most important step: return the object so it can be used by the rest of our angular code
+				return factory;
+			});
+
+				// The .controller() method adds a UserLists controller to the module
+			myApp.controller('PlayersController', function ($scope, PlayerFactory){
+				$scope.players = [];
+
+				PlayerFactory.getPlayers(function(data){
+					$scope.players = data;
+					console.log("I'm in PlayersController - get method", $scope.players)
+				});
+
+				$scope.addPlayers = function(){
+					PlayerFactory.addPlayers($scope.newPlayer);
+					$scope.newPlayer = {};
+					console.log("I'm in PlayersController - post method", $scope.players)
+				};
+
+				$scope.deletePlayers = function(player){
+					PlayerFactory.deletePlayers(player);
+					console.log("I'm in PlayersController - post method", $scope.players)
+				}
+
+			});
+
+				// The .controller() method adds a CustomizeUsers controller to the module
+			myApp.controller('TeamsController', function ($scope, TeamFactory){
+				$scope.teams = [];
+
+				TeamFactory.getTeams(function(data){
+					$scope.teams = data;
+					console.log("I'm in TeamsController - get method", $scope.teams)
+				});
+
+				$scope.addTeams = function(){
+					TeamFactory.addTeams($scope.newTeam);
+					$scope.newTeam = {};
+					console.log("I'm in TeamsController - post method", $scope.teams);
+				};
+
+				$scope.deleteTeams = function(team){
+					TeamFactory.deleteTeams(team);
+					console.log("I'm in TeamsController - post method", $scope.teams);
+				}
+
+			});
+
+				// The .controller() method adds a CustomizeUsers controller to the module
+			myApp.controller('AssociationsController', function ($scope, TeamFactory, PlayerFactory){
+				$scope.teams = [];
+				$scope.players = [];
+				$scope.associations = [];
+
+
+				PlayerFactory.getPlayers(function(data){
+					$scope.players = data;
+					console.log("I'm in AssocController - get Players method", $scope.players)
+				});
+				TeamFactory.getTeams(function(data){
+					$scope.teams = data;
+					console.log("I'm in AssocController - get Teams method", $scope.teams)
+				});
+
+				
+				TeamFactory.getAssociations(function(data){
+					$scope.associations = data;
+					console.log("I'm in AssocController - get Associations method", $scope.associations)
+				});
+
+				$scope.addAssociations = function(){
+					// console.log("add assoc ", $scope.newAssociation)
+					TeamFactory.addAssociations($scope.newAssociation);
+					$scope.newAssociations = {};
+				};
+
+				$scope.deleteAssociations = function(association){
+					// $scope.associations.slice($scope.associations.indexOf($scope.association), 1);
+					TeamFactory.deleteAssociations(association);
+				};
+
+			});			
+
+		</script>
+	</head>
+	<body>
+		<div ng-app='myApp'>
+			<a href='#/orders'>Orders</a> | <a href='#/customers'>Customers</a>
+			<div ng-view=''>
+			</div>
+		</div>
+	</body>
+</html>
+
+<style type="text/css">
+	*{
+		font-family: Tahoma;
+	}
+</style>
