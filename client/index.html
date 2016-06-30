@@ -25,22 +25,32 @@
 				});
 
 				// Create a factory (attached to this module)
-			myApp.factory('CustomerFactory', function (){
+			myApp.factory('CustomerFactory', function ($http){
 				// The factory is nothing more than a function that returns an object
 				var customers = [];
 				var factory = {};
 					// Add a getUsers key to the factory object with a value of a function.
 				factory.getCustomers = function(callback){
-					// Pass the users to a callback to be used by whoever calls the method
-					console.log("getting customers");
-					callback(customers);
+					$http.get('/show').success(function(output){
+						customers = output;
+						callback(customers);
 
+					});
 				}
-				factory.addCustomers = function(newCustomer){
-					customers.push(newCustomer);
+
+				factory.addNewCustomer = function(data, callback){
+					console.log("in factory: ",data);
+					$http.post('/new', data).success(function(output){
+						customers = output;
+						console.log("adding to the db");
+						callback(customers);
+					});
 				}
-				factory.deleteCustomers = function(customer){
-					customers.splice(customers.indexOf(customer), 1);
+
+				factory.deleteCustomer = function(delete_id, callback){
+					$http.get('/remove/' + delete_id).success(function(){
+						callback();
+					});
 				}
 				// Most important step: return the object so it can be used by the rest of our angular code
 				return factory;
@@ -52,18 +62,27 @@
 
 				CustomerFactory.getCustomers(function(data){
 					$scope.customers = data;
-					console.log("I'm in CustomerFactory - get method", $scope.customers)
-				});
+					console.log("I'm in CustomerFactory - get method", data);
+				})
 
-				$scope.addCustomers = function(){
-					CustomerFactory.addCustomers($scope.newCustomer);
-					$scope.newCustomer = {};
-					console.log("I'm in CustomerFactory - post method", $scope.customers)
-				};
+				$scope.addCustomer = function(){
+					console.log("in controller, addCustomer ", $scope.newCustomer);
+					CustomerFactory.addNewCustomer($scope.newCustomer, function(output){
+						$scope.customers = output;
+						$scope.newCustomer = {};
+						console.log("I'm in CustomerFactory - post method", output);
+					})
+				}
 
-				$scope.deletePlayers = function(player){
-					PlayerFactory.deletePlayers(player);
-					console.log("I'm in PlayersController - post method", $scope.players)
+				$scope.deleteCustomers = function(Customer){
+					CustomerFactory.deleteCustomer(Customer._id, function(){
+						CustomerFactory.getCustomers(function(data){
+							$scope.customers = data;
+							console.log("I'm in CustomerFactory - get method", data);
+						})
+
+					});
+					console.log("I'm in CustomersController - post method", $scope.Customer);
 				}
 
 			});

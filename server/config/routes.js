@@ -5,15 +5,18 @@ var customers = require('./../controllers/customers.js');
 	// We will have to require this in the server.js file (and pass it app!)
 module.exports = function(app) {
 	// verb: get, plural of target as the URI is the RESTful index method (it returns all friends)
-	app.get('/customers', function(req, res) {
+	app.get('/show', function(req, res) {
 		customers.index(req, res);
 	});
 
-	app.post('/addFriend', function(req, res){
-		customers.create(req, res);
+	app.post('/new', function(req, res){
+		console.log("in /new route", req.body);
+			// BRENDAN -- why this req.params.name/what does this mean?
+			// Also, why is this a 'get' and not a 'post'?
+		customers.create(req, res); 
 	});
 
-	app.post('/deleteFriend/:id', function(req, res){
+	app.get('/remove/:id', function(req, res){
 		customers.delete(req, res);
 	})
 };

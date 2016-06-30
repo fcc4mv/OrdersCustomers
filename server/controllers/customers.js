@@ -15,32 +15,42 @@ module.exports = (function() {
 					console.log(err);
 				} else {
 					res.json(results);
+					console.log("display in customers.js")
 				}
 			})
 		},
 
-		create: function(req, res) {
+		create: function(req, res, name) {
 			var Cust = new Customer({
-				name: req.body.name,
+				name: req.body.name
 			});
-			Cust.save(function(err, results){
+			Cust.save(function(err){
 				if(err){
-					console.log(err);
+					console.log("db error!");
 				} else {
-					res.json(results);
+					Customer.find({}, function(err, customers){
+						if(err){
+							console.log('error!! from db!!');
+						} else {
+							
+							console.log("saved in db")
+							res.json(customers);
+						}
+					})
+
 				}
 			})
 		},
 
-		delete: function(req, res) {
+		delete: function(req, res ) {
 			console.log("during deletion", req.params.id);
-			Customer.remove({_id: req.params.id}, function(err, results){
+			Customer.remove({_id: req.params.id}, function(err){
 				if(err){
-					console.log("didn't delete, because of this error: ", err);
+					console.log('could not find id to delete');
 				} else {
-					console.log('successfully deleted');
-					res.json(results);
-				}
+					res.end();
+					console.log('deleted')
+					}				
 			})
 		}
 	}
