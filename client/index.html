@@ -74,11 +74,11 @@
 						callback();
 					});
 				}
-				// Most important step: return the object so it can be used by the rest of our angular code
+
 				return factory;
 			});
 
-				// The .controller() method adds a UserLists controller to the module
+
 			myApp.controller('CustomersController', function ($scope, CustomerFactory){
 				$scope.customers = [];
 
