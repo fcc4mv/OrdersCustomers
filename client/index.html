@@ -24,27 +24,38 @@
 					});
 				});
 
-				// Create a factory (attached to this module)
 			myApp.factory('CustomerFactory', function ($http){
-				// The factory is nothing more than a function that returns an object
 				var customers = [];
+				var products = [
+					{productName: "Nike Shoes"},
+					{productName: "Black Belts"},
+					{productName: "Ice Creams"},
+					{productName: "candies"}
+				]
 				var factory = {};
-					// Add a getUsers key to the factory object with a value of a function.
+
+				factory.getOrders = function(callback){
+					callback(products);
+				}
+
 				factory.getCustomers = function(callback){
 					$http.get('/show').success(function(output){
 						customers = output;
 						callback(customers);
-
 					});
 				}
 
 				factory.addNewCustomer = function(data, callback){
-					console.log("in factory: ",data);
+					console.log("in factory: ", data);
 					$http.post('/new', data).success(function(output){
 						customers = output;
 						console.log("adding to the db");
 						callback(customers);
 					});
+				}
+
+				factory.addOrders = function(newOrder){
+					products.push(newOrder);
 				}
 
 				factory.deleteCustomer = function(delete_id, callback){
@@ -99,21 +110,24 @@
 
 				CustomerFactory.getCustomers(function(data){
 					$scope.customers = data;
-
 				})
 
-				$scope.addOrders = function(){
-					// console.log("add assoc ", $scope.newAssociation)
-					CustomerFactory.addOrders($scope.newOrders);
-					$scope.newOrders = {};
-				};
+				$scope.addOrders = function(order){
+					$scope.newOrder = {};
+					CustomerFactory.addOrders($scope.newOrder);
+					console.log("passed data!")
+					// $scope.orders = [];
 
-				$scope.deleteOrders = function(order){
-					// $scope.associations.slice($scope.associations.indexOf($scope.association), 1);
-					CustomerFactory.deleteOrders(order);
-				};
+						// console.log("I'm in (order)CustomerFactory - post method", output);
+				}
+		});
 
-			});
+				// $scope.deleteOrders = function(order){	// no needed for delete button
+				// 	// $scope.associations.slice($scope.associations.indexOf($scope.association), 1);
+				// 	CustomerFactory.deleteOrders(order);
+				// }; // ** ADDING LATER **
+
+			// });
 
 		</script>
 	</head>

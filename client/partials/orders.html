@@ -1,22 +1,20 @@
-<div ng-controller="CustomersController">
+<div ng-controller="ordersController">
 	<h2>Add a new order</h2>
-	Customers<select ng-model="">
+	Customers<select ng-model="order.name">
 		<option ng-repeat="customer in customers" values="{{ customer.name }}" ng-model="customer.name">{{ customer.name}}</option>
 	</select>
-	orders<select>
+	<!-- orders<select>
 		<option>1</option>
 		<option>2</option>
 		<option>3</option>
 		<option>4</option>
 		<option>5</option>
+	</select> -->
+	<input type="number" ng-model='order.quantity' min="1" max="10" ng-init='new_order.quantity=1'>
+	<select ng-model="order.productName" ng-init='order.productName=productName[0]' ng-option='order as orders for order in orders'>
+		<option ng-repeat="order in orders" values="{{ order.productName }}" ng-model="order.productName">{{ order.productName }}</option>
 	</select>
-	<select>
-		<option>Nike Shoes</option>
-		<option>Black Belts</option>
-		<option>Ice Creams</option>
-		<option>Candies</option>
-	</select>
-	<input type="submit" value="Order" ng-click="addOrders">
+	<input type="submit" value="Order"  ng-click="addOrders()">
 	<!-- <h3>Customer Name: <input type="text" ng-model="newTeam.name"><input type="submit" ng-click="addTeams()" value="Add"></h3> -->
 	<br><br>
 	<hr>
@@ -33,12 +31,12 @@
 			<th>Quantity</th>
 			<th>Date</th>
 		</tr>
-		<tr ng-repeat="customer in customers | filter: filter_name" align="left">
-			<td>{{ customer.name }}</td>
-			<td>{{ customer.product }}</td>
-			<td>{{ customer.quantity }}</td>
-			<td>{{ customer.created_at }}</td>
-			<td><input type="submit" ng-click="deleteCustomers(customer)" value="Remove"></td>
+		<tr ng-repeat="order in orders | filter: filter_name track by $index" align="left">
+			<td>{{ order.name }}</td>
+			<td>{{ order.productName }}</td>
+			<td>{{ order.quantity }}</td>
+			<td>{{ order.createdAt | date: 'MMMM dd, yyyy' }}</td>
+			<!-- <td><input type="submit" ng-click="deleteCustomers(customer)" value="Remove"></td> -->
 		</tr>
 	</table>
 	<br>
