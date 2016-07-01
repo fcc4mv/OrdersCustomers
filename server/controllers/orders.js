@@ -20,10 +20,8 @@ return {
 		})
 	},
 
-	create: function(req, res, name) {
-		var Or = new Order({
-			name: req.body.name
-		});
+	create: function(req, res) {
+		var Or = new Order(req.body)
 		Or.save(function(err){
 			if(err){
 				console.log("db error!")
@@ -38,6 +36,8 @@ return {
 			})
 		}
 	})
+}
+}
 })();
 //
 // 	delete: function(req, res) {

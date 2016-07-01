@@ -26,15 +26,16 @@
 
 			myApp.factory('CustomerFactory', function ($http){
 				var customers = [];
+				var orders = [];
 				var products = [
-					{productName: "Nike Shoes"},
-					{productName: "Black Belts"},
-					{productName: "Ice Creams"},
-					{productName: "candies"}
+					{Name: "Nike Shoes"},
+					{Name: "Black Belts"},
+					{Name: "Ice Creams"},
+					{Name: "candies"}
 				]
 				var factory = {};
 
-				factory.getOrders = function(callback){
+				factory.getProducts = function(callback){
 					callback(products);
 				}
 
@@ -42,6 +43,12 @@
 					$http.get('/show').success(function(output){
 						customers = output;
 						callback(customers);
+					});
+				}
+				factory.getOrders = function(callback){
+					$http.get('/orders').success(function(output){
+						orders = output;
+						callback(orders);
 					});
 				}
 
@@ -54,8 +61,12 @@
 					});
 				}
 
-				factory.addOrders = function(newOrder){
-					products.push(newOrder);
+				factory.addOrders = function(newOrder, callback){
+					$http.post('/orders', newOrder).success(function(output){
+						orders = output;
+						console.log("adding orders to the db");
+						callback(orders);
+					})
 				}
 
 				factory.deleteCustomer = function(delete_id, callback){
@@ -100,34 +111,37 @@
 
 			myApp.controller('ordersController', function ($scope, CustomerFactory){
 				$scope.orders = [];
+				$scope.products = [];
 				$scope.customers = [];
 
 
-				CustomerFactory.getOrders(function(data){
-					$scope.orders = data;
+				CustomerFactory.getProducts(function(data){
+					$scope.products = data;
 					console.log("I'm in ordersController - get orders method", $scope.orders)
 				});
 
 				CustomerFactory.getCustomers(function(data){
 					$scope.customers = data;
 				})
+				CustomerFactory.getOrders(function(data){
+					$scope.orders = data;
+				})
 
 				$scope.addOrders = function(order){
-					$scope.newOrder = {};
-					CustomerFactory.addOrders($scope.newOrder);
-					console.log("passed data!")
-					// $scope.orders = [];
+					CustomerFactory.addOrders($scope.new_order, function(output) {
+						$scope.orders = output;
+						$scope.new_order = {};
+						console.log("I'm in (order)CustomerFactory - post method", output);
+				})
+			}
 
-						// console.log("I'm in (order)CustomerFactory - post method", output);
-				}
-		});
 
 				// $scope.deleteOrders = function(order){	// no needed for delete button
 				// 	// $scope.associations.slice($scope.associations.indexOf($scope.association), 1);
 				// 	CustomerFactory.deleteOrders(order);
 				// }; // ** ADDING LATER **
 
-			// });
+			});
 
 		</script>
 	</head>
