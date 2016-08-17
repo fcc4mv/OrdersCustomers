@@ -14,10 +14,10 @@ app.use(bodyParser.json());
 
 	// This goes in our server.js file so that we actually use the mongoose config file!
 	// Need to require this BEFORE you require the routes.js file.
-require('./server/config/mongoose.js');
+// require('./server/config/mongoose.js');
 	// requires and runs the code from our routes.js file and passes it app
 	// so that we can attach our routing rules to our express application!
-require('./server/config/routes.js')(app);
+// require('./server/config/routes.js')(app);
 
 app.listen(8000, function() {
 	console.log('cool stuff on: 8000');
